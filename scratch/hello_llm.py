@@ -1,18 +1,29 @@
-from foundry_local_sdk import FoundryLocalManager
-from openai import OpenAI
+from foundry_local_sdk import Configuration, FoundryLocalManager
 
-MODEL_ALIAS = "phi-4-mini"
+MODEL_ALIAS = "qwen2.5-0.5b"
 
-manager = FoundryLocalManager(MODEL_ALIAS)
+config = Configuration(app_name="rag_assistant")
+FoundryLocalManager.initialize(config)
+manager = FoundryLocalManager.instance
 
-client = OpenAI(base_url=manager.endpoint, api_key=manager.api_key)
+manager.download_and_register_eps()
 
-response = client.chat.completions.create(
-    model=manager.get_model_info(MODEL_ALIAS).id,
-    messages=[
-        {"role": "system", "content": "You are a helpful, concise assistant."},
-        {"role": "user", "content": "Explain what RAG is in two sentences."},
-    ],
-)
+model = manager.catalog.get_model(MODEL_ALIAS)
+model.download()
+model.load()
 
-print(response.choices[0].message.content)
+client = model.get_chat_client()
+messages = [
+    {"role": "system", "content":"You are a helpful, concise assistant." },
+    {"role": "user", "content":"Explain what RAG is in two sentences." },
+]
+
+print("Assistant: ", end="", flush=True)
+for chunk in client.complete_streaming_chat(messages):
+    if chunk.choices:
+        piece = chunk.choices[0].delta.content
+        if piece: 
+            print(piece, end="", flush=True)
+print()
+
+model.unload()
