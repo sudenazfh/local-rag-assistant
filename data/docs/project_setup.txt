@@ -1,0 +1,7 @@
+Project Setup and Structure
+
+This project is a local RAG assistant built in Python. It stores document chunks and their embedding vectors in a single SQLite database file, which needs no server and no installation beyond Python itself.
+
+The code is organized by responsibility. The config module holds every setting in one place. The chunking module splits documents into passages. The embeddings module turns text into vectors. The database module handles all SQLite reads and writes. The ingest script ties these together to load documents, and the retriever finds the best chunks for a question.
+
+A golden rule of the design is that the user interface never talks to the database directly. Each layer calls the layer below it through clean functions. This separation makes the system easy to test and easy to change, because swapping one part does not force changes everywhere else.

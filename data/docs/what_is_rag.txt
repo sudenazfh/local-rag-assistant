@@ -1,0 +1,7 @@
+What is Retrieval-Augmented Generation?
+
+Retrieval-Augmented Generation, or RAG, is a technique that gives a language model access to outside knowledge at question time. Instead of relying only on what the model memorized during training, RAG looks up relevant text from your own documents and feeds it to the model as context.
+
+A RAG system has two phases. The first phase is ingestion: documents are split into small chunks, each chunk is turned into an embedding vector, and the vectors are stored in a database. The second phase is retrieval and generation: when a user asks a question, the question is embedded, the closest chunks are found by similarity, and those chunks are handed to the language model to write a grounded answer.
+
+The main benefit of RAG is that answers stay accurate and up to date without retraining the model. If you add a new document, the system can use it immediately after ingestion. This makes RAG a practical choice for question answering over private or frequently changing information.

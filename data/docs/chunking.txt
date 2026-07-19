@@ -1,0 +1,7 @@
+Why Documents Are Split Into Chunks
+
+Language models and embedding models work best on short passages, not whole documents. A long file is therefore split into smaller pieces called chunks before it is stored. Each chunk becomes its own embedding and its own searchable unit.
+
+This project uses a simple chunking strategy. The text is split on blank lines into paragraphs, and paragraphs are glued together greedily until adding the next one would exceed about 800 characters. At that point a new chunk begins. This keeps related sentences together while stopping any chunk from growing too large.
+
+Chunk size is a trade-off. Very small chunks give precise matches but may miss surrounding context. Very large chunks carry more context but dilute the meaning of the embedding, making matches less accurate. A few hundred characters is a common starting point that balances both concerns.

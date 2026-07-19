@@ -1,0 +1,7 @@
+Foundry Local
+
+Foundry Local is a tool that runs a large language model directly on your own computer. Nothing is sent to the cloud, there is no API key, and it works completely offline. This is useful for privacy, for working without internet, and for avoiding usage costs.
+
+In this project Foundry Local is used only for the chat step, where the model reads the retrieved context and writes the final answer. Embeddings are handled separately by the sentence-transformers library, because its embedding support is more stable for beginners.
+
+The model is accessed through an OpenAI-compatible interface, which means the same code style used for the OpenAI API also talks to the local model. The active model in this project is a small, fast model chosen so it runs smoothly on a laptop without freezing the machine.
