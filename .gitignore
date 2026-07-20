@@ -4,6 +4,8 @@ __pycache__/
 
 data/*.db
 
+scratch/
+
 .env
 .DS_Store
 Thumbs.db
