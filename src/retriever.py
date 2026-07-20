@@ -10,6 +10,8 @@ def _cosine(a, b) -> float:
 def get_top_chunks (query: str, k: int = TOP_K) -> list[dict]:
     query_vec = embed_text(query)
     chunks = get_all_chunks()
+    # ponytail: O(n) brute-force scan over all vectors. Fine for <10k chunks. Swap to a vector 
+    # index (faiss/sqlite-vec) only if retrieval gets slow.
 
     for chunk in chunks:
         chunk["score"] = _cosine(query_vec, chunk["embedding"])
