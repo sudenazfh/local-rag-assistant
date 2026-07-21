@@ -1,0 +1,1270 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.5;
+       max-width: 820px; margin: 0 auto; padding: 24px; color: #1a1a1a; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { border-bottom: 2px solid #ddd; padding-bottom: 4px; margin-top: 32px; }
+code { font-family: Consolas, 'Courier New', monospace; background: #f2f2f2;
+       padding: 1px 4px; border-radius: 3px; font-size: 0.9em; }
+pre { background: #1e1e1e; color: #e6e6e6; padding: 14px; border-radius: 6px;
+      overflow-x: auto; font-size: 0.85em; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid #f0c000; background: #fffbe6; margin: 12px 0;
+             padding: 8px 14px; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; }
+</style></head><body><h1>🕹️ LOCAL RAG ASSISTANT — Beginner Roadmap</h1>
+<pre><code> ██████╗  █████╗  ██████╗     ██████╗ ██╗   ██╗███████╗███████╗████████╗
+ ██╔══██╗██╔══██╗██╔════╝    ██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝
+ ██████╔╝███████║██║  ███╗   ██║   ██║██║   ██║█████╗  ███████╗   ██║
+ ██╔══██╗██╔══██║██║   ██║   ██║▄▄ ██║██║   ██║██╔══╝  ╚════██║   ██║
+ ██║  ██║██║  ██║╚██████╔╝   ╚██████╔╝╚██████╔╝███████╗███████║   ██║
+ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝     ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝
+        offline Q&amp;A chatbot · Microsoft Foundry Local · zero internet
+</code></pre>
+<blockquote>
+<p><strong>Your mentor's note (read once):</strong>
+You started July 1, it's July 16, you've done nothing yet. <strong>That is fine.</strong> This
+roadmap compresses the 5-week plan into ~12 focused days. You have 2 weeks full-time
+— that's enough. We go <strong>one small step at a time</strong>. Every step tells you exactly
+what to do, why, and how to check it worked. You type the code, you learn by doing,
+and you <strong>ask me every question</strong>. Nothing here is a race. Finish a step → tick the
+box → commit → next step.</p>
+</blockquote>
+<hr />
+<h2>📖 HOW TO USE THIS DOCUMENT</h2>
+<p>Every step has the <strong>same 5 parts</strong>, always in the same order. Your brain will learn the
+rhythm and stop having to re-orient:</p>
+<table>
+<thead>
+<tr>
+<th>Icon</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🎯 <strong>Goal</strong></td>
+<td>What this step achieves, in one sentence</td>
+</tr>
+<tr>
+<td>🧠 <strong>Why</strong></td>
+<td>The reason it matters (so it's not just magic)</td>
+</tr>
+<tr>
+<td>⌨️ <strong>Do</strong></td>
+<td>The exact commands/code to type</td>
+</tr>
+<tr>
+<td>✅ <strong>Check</strong></td>
+<td>How you know it worked before moving on</td>
+</tr>
+<tr>
+<td>💾 <strong>Commit</strong></td>
+<td>The git command to save your progress</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules for you:</strong></p>
+<ul>
+<li>☑️ Do steps <strong>in order</strong>. Don't skip ahead. Each one builds on the last.</li>
+<li>☑️ One step per sitting is totally fine. Close the laptop after a green ✅.</li>
+<li>☑️ If a ✅ check fails → <strong>stop, don't continue, ask me.</strong> Paste the error.</li>
+<li>☑️ See <code>❓ Ask me:</code> prompts? Those are the exact questions worth asking when curious.</li>
+<li>☑️ <code>🧩 YOU WRITE THIS</code> = code I want <em>you</em> to write yourself (I'll give hints, not the answer). That's where the learning happens.</li>
+</ul>
+<p><strong>Progress tracker</strong> — tick these as you finish each day:</p>
+<pre><code>PHASE 0 · SETUP        [ ] Day 1
+PHASE 1 · FOUNDATIONS  [ ] Day 2   [ ] Day 3   [ ] Day 4
+PHASE 2 · BUILD        [ ] Day 5   [ ] Day 6   [ ] Day 7   [ ] Day 8
+PHASE 3 · POLISH       [ ] Day 9   [ ] Day 10  [ ] Day 11  [ ] Day 12
+</code></pre>
+<hr />
+<h2>🗺️ THE BIG PICTURE (understand this before you build anything)</h2>
+<p>Your app does <strong>one loop</strong>. Memorize it — everything you build is a piece of this:</p>
+<pre><code>   ┌──────────────────────────────────────────────────────────────────┐
+   │                                                                    │
+   │   YOU type a question                                              │
+   │        │                                                           │
+   │        ▼                                                           │
+   │   [1] EMBED the question   →  turn text into a list of numbers     │
+   │        │                       (a &quot;vector&quot;)                        │
+   │        ▼                                                           │
+   │   [2] SEARCH the database  →  find chunks whose vectors are        │
+   │        │                       closest = most similar in meaning   │
+   │        ▼                                                           │
+   │   [3] AUGMENT the prompt   →  glue those chunks onto your question │
+   │        │                                                           │
+   │        ▼                                                           │
+   │   [4] GENERATE the answer  →  local LLM reads chunks + question,   │
+   │        │                       writes an answer from YOUR docs     │
+   │        ▼                                                           │
+   │   ANSWER appears (with source), all offline                        │
+   │                                                                    │
+   └──────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>That's <strong>RAG</strong>: <strong>R</strong>etrieve, <strong>A</strong>ugment, <strong>G</strong>enerate. Before you can do that loop live,
+you first have to <strong>load your documents into the database</strong> (that's called <em>ingestion</em>,
+you do it once up front).</p>
+<p><strong>The 4 layers</strong> (clean architecture = keep these separate, never mix them):</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Job</th>
+<th>Your files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🖥️ <strong>App / UI</strong></td>
+<td>Talk to the human</td>
+<td><code>app.py</code> (Streamlit), <code>main.py</code> (CLI)</td>
+</tr>
+<tr>
+<td>⚙️ <strong>Logic / Pipeline</strong></td>
+<td>Orchestrate the RAG loop</td>
+<td><code>src/retriever.py</code>, <code>src/generator.py</code>, <code>src/ingest.py</code></td>
+</tr>
+<tr>
+<td>💾 <strong>Data</strong></td>
+<td>Store &amp; fetch chunks + vectors</td>
+<td><code>src/database.py</code> (SQLite)</td>
+</tr>
+<tr>
+<td>🤖 <strong>AI</strong></td>
+<td>Embeddings + local LLM</td>
+<td><code>src/embeddings.py</code>, Foundry Local</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Golden rule of clean architecture:</strong> the UI never talks to the database directly. It
+calls a logic function, which calls the data layer. Each layer only knows about the one
+below it. This is why your code won't turn into spaghetti.</p>
+<hr />
+<h2>🧰 TECH STACK (what each tool is and why we picked it)</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it is</th>
+<th>Why this one</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python 3.11+</strong></td>
+<td>Programming language</td>
+<td>You have it; the AI world runs on it</td>
+</tr>
+<tr>
+<td><strong>Git + GitHub</strong></td>
+<td>Save history / backup / show your work</td>
+<td>Industry standard; you'll commit constantly</td>
+</tr>
+<tr>
+<td><strong>Foundry Local</strong></td>
+<td>Runs an LLM <em>on your laptop</em>, offline</td>
+<td>The whole point of the project — no cloud, no API key</td>
+</tr>
+<tr>
+<td><strong>sentence-transformers</strong></td>
+<td>Turns text → vectors (embeddings)</td>
+<td>Simplest reliable offline embedder for beginners</td>
+</tr>
+<tr>
+<td><strong>SQLite</strong></td>
+<td>A database that's just one file</td>
+<td>Built into Python, zero setup, perfect for local</td>
+</tr>
+<tr>
+<td><strong>NumPy</strong></td>
+<td>Fast math on lists of numbers</td>
+<td>Cosine similarity in one line</td>
+</tr>
+<tr>
+<td><strong>Streamlit</strong></td>
+<td>Build a web UI with pure Python</td>
+<td>You wanted a UI + retro look, this is the fastest path</td>
+</tr>
+<tr>
+<td><strong>VS Code</strong></td>
+<td>Your code editor</td>
+<td>You have it</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>A choice I made for you &amp; why:</strong> The official plan says use Foundry Local for
+<em>both</em> embeddings and chat. Foundry's embedding API is still shifting and it trips up
+beginners. So we use <code>sentence-transformers</code> for embeddings (rock solid, offline) and
+Foundry Local only for the chat LLM. Same result, far fewer tears. If you want to swap
+to Foundry embeddings later, that's a clean one-file change — because clean architecture.</p>
+</blockquote>
+<hr />
+<hr />
+<h1>🟦 PHASE 0 — SETUP (Day 1)</h1>
+<blockquote>
+<p>Goal of today: a real project folder, a git repo, a Python environment, a first commit
+pushed to GitHub, <strong>and</strong> Foundry Local installed with a model saying hello. When today's
+green, you have a professional skeleton. No RAG yet — just foundations that won't wobble.</p>
+</blockquote>
+<hr />
+<h2>Step 1 — Create the project folder</h2>
+<p>🎯 <strong>Goal:</strong> A clean home for all your code, on your Desktop, separate from this plan folder.</p>
+<p>🧠 <strong>Why:</strong> Keep the <em>plan</em> (this folder) and the <em>project</em> (your code) apart. Mixing docs
+and code is the first mess to avoid.</p>
+<p>⌨️ <strong>Do</strong> — open <strong>PowerShell</strong> (Start menu → type &quot;PowerShell&quot; → Enter) and run:</p>
+<pre><code class="language-powershell">cd $HOME\Desktop
+mkdir local-rag-assistant
+cd local-rag-assistant
+</code></pre>
+<p>✅ <strong>Check:</strong> Run <code>pwd</code>. It should end in <code>...\Desktop\local-rag-assistant</code>.</p>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;What does <code>cd</code> and <code>$HOME</code> mean?&quot; if any command is unfamiliar. Never run
+a command you don't understand — ask first, always.</p>
+</blockquote>
+<hr />
+<h2>Step 2 — Turn it into a Git repository</h2>
+<p>🎯 <strong>Goal:</strong> Start tracking history from the very first line of code.</p>
+<p>🧠 <strong>Why:</strong> Git is a <strong>time machine + save points</strong>. Every commit is a save you can return
+to. You start git <em>now</em>, empty, so it captures everything from the beginning.</p>
+<p>⌨️ <strong>Do:</strong></p>
+<pre><code class="language-powershell">git init
+git branch -M main
+</code></pre>
+<p>Then tell git who you are (only needed once per computer — skip if you've done it before):</p>
+<pre><code class="language-powershell">git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;baranoral88@gmail.com&quot;
+</code></pre>
+<p>✅ <strong>Check:</strong> <code>git status</code> prints <code>On branch main</code> and <code>No commits yet</code>.</p>
+<p>📚 <strong>Git vocabulary you now own:</strong></p>
+<ul>
+<li><strong>repository (repo)</strong> = the folder git is watching</li>
+<li><strong>branch</strong> = a parallel line of work; <code>main</code> is the trunk</li>
+<li><strong>commit</strong> = one save point with a message</li>
+</ul>
+<hr />
+<h2>Step 3 — Create the folder skeleton</h2>
+<p>🎯 <strong>Goal:</strong> Build the empty clean-architecture structure <em>before</em> writing logic.</p>
+<p>🧠 <strong>Why:</strong> Deciding where things go up front means you never have to ask &quot;where does this
+file belong?&quot; mid-code. The structure <em>is</em> the plan.</p>
+<p>⌨️ <strong>Do:</strong></p>
+<pre><code class="language-powershell">mkdir src, data, data\docs, tests
+New-Item src\__init__.py, tests\__init__.py, README.md, requirements.txt, .gitignore
+</code></pre>
+<p>Your folder is now:</p>
+<pre><code>local-rag-assistant/
+├── .gitignore          ← tells git what to NOT track
+├── README.md           ← project front page (write it last)
+├── requirements.txt    ← list of Python packages you use
+├── data/
+│   └── docs/           ← your source documents go here
+├── src/                ← all your logic + data + AI code
+│   └── __init__.py     ← makes 'src' an importable Python package
+└── tests/
+    └── __init__.py
+</code></pre>
+<blockquote>
+<p>🧠 <code>__init__.py</code> is an empty file that tells Python &quot;this folder is a package you can
+import from.&quot; That's it. It stays empty.</p>
+</blockquote>
+<p>✅ <strong>Check:</strong> In VS Code, <code>code .</code> (opens this folder). You see the tree above in the sidebar.</p>
+<hr />
+<h2>Step 4 — Write <code>.gitignore</code> (do this BEFORE your first commit)</h2>
+<p>🎯 <strong>Goal:</strong> Stop git from tracking junk (the virtual environment, caches, the database file).</p>
+<p>🧠 <strong>Why:</strong> Some files are huge, machine-specific, or regenerated. Committing them pollutes
+history. <code>.gitignore</code> is the bouncer at the door.</p>
+<p>⌨️ <strong>Do:</strong> Open <code>.gitignore</code> in VS Code and paste:</p>
+<pre><code class="language-gitignore"># Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# The database is generated by our ingest script — don't track it
+data/*.db
+
+# Secrets &amp; OS noise
+.env
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+</code></pre>
+<p>✅ <strong>Check:</strong> The file is saved. (You'll confirm it works after the venv exists.)</p>
+<hr />
+<h2>Step 5 — Create a Python virtual environment</h2>
+<p>🎯 <strong>Goal:</strong> An isolated Python sandbox just for this project's packages.</p>
+<p>🧠 <strong>Why:</strong> A <strong>virtual environment (venv)</strong> keeps <em>this</em> project's packages separate from
+every other project and from your system Python. No version clashes, ever. Pros always
+use one.</p>
+<p>⌨️ <strong>Do:</strong></p>
+<pre><code class="language-powershell">python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+</code></pre>
+<p>Your prompt should now start with <code>(.venv)</code>. That means the sandbox is <strong>active</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>If PowerShell blocks the activation</strong> with a &quot;running scripts is disabled&quot; error,
+run this once, then retry the activate line:</p>
+<pre><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+</code></pre>
+<p>❓ <strong>Ask me</strong> to explain what that does before you run it if you're unsure — it's safe,
+but understanding beats blindly pasting.</p>
+</blockquote>
+<p>✅ <strong>Check:</strong> Prompt shows <code>(.venv)</code>. Run <code>python --version</code> → 3.11 or higher.</p>
+<blockquote>
+<p>🔁 <strong>You'll re-activate every session.</strong> New PowerShell window = run
+<code>.\.venv\Scripts\Activate.ps1</code> again first. If you forget, packages &quot;vanish&quot; — that's
+the #1 beginner confusion. It's not vanished, the sandbox is just closed.</p>
+</blockquote>
+<hr />
+<h2>Step 6 — Your first commit 🎉</h2>
+<p>🎯 <strong>Goal:</strong> Save this skeleton as save-point #1.</p>
+<p>🧠 <strong>Why:</strong> Commit early, commit often. A tiny first commit proves the whole git pipeline
+works before you have anything to lose.</p>
+<p>⌨️ <strong>Do:</strong></p>
+<pre><code class="language-powershell">git add .
+git status
+</code></pre>
+<p>Look at <code>git status</code> output. You should see your files listed as &quot;to be committed&quot; — and
+you should <strong>NOT</strong> see <code>.venv/</code> (because <code>.gitignore</code> is doing its job).</p>
+<blockquote>
+<p>✅ <strong>This is your .gitignore check:</strong> if <code>.venv/</code> shows up, stop and ask me — the ignore
+file isn't working.</p>
+</blockquote>
+<p>Now commit:</p>
+<pre><code class="language-powershell">git commit -m &quot;chore: initial project skeleton&quot;
+</code></pre>
+<p>📚 <strong>About commit messages</strong> — we use <strong>Conventional Commits</strong>. Format: <code>type: description</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feat</code></td>
+<td>You added a new feature</td>
+</tr>
+<tr>
+<td><code>fix</code></td>
+<td>You fixed a bug</td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>Docs only (README, comments)</td>
+</tr>
+<tr>
+<td><code>chore</code></td>
+<td>Setup, config, housekeeping</td>
+</tr>
+<tr>
+<td><code>refactor</code></td>
+<td>Reshaped code without changing behavior</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>Added or changed tests</td>
+</tr>
+</tbody>
+</table>
+<p>Keep the description short, lowercase, present tense: &quot;add retriever&quot;, not &quot;Added the retriever function&quot;.</p>
+<p>✅ <strong>Check:</strong> <code>git log --oneline</code> shows one line — your commit.</p>
+<hr />
+<h2>Step 7 — Push to GitHub</h2>
+<p>🎯 <strong>Goal:</strong> Your code lives safely in the cloud and you can show it off.</p>
+<p>🧠 <strong>Why:</strong> GitHub = backup + portfolio + proof of work. If your laptop dies, your project
+doesn't.</p>
+<p>⌨️ <strong>Do:</strong></p>
+<ol>
+<li>Go to <strong>github.com</strong> → click <strong>+</strong> (top right) → <strong>New repository</strong>.</li>
+<li>Name it <code>local-rag-assistant</code>. <strong>Leave everything else unchecked</strong> (no README, no
+.gitignore — you already have them). Click <strong>Create repository</strong>.</li>
+<li>GitHub shows you commands. Use the <strong>&quot;…or push an existing repository&quot;</strong> block. It looks like:</li>
+</ol>
+<pre><code class="language-powershell">git remote add origin https://github.com/YOUR-USERNAME/local-rag-assistant.git
+git push -u origin main
+</code></pre>
+<p>(It may pop a browser to log in — approve it.)</p>
+<p>✅ <strong>Check:</strong> Refresh the GitHub page. Your files are there.</p>
+<p>📚 <strong>New vocabulary:</strong></p>
+<ul>
+<li><strong>remote</strong> = a copy of your repo on another machine (GitHub). <code>origin</code> is its nickname.</li>
+<li><strong>push</strong> = upload your commits to the remote.</li>
+<li><strong><code>-u origin main</code></strong> = &quot;remember this remote+branch, so next time I just type <code>git push</code>&quot;.</li>
+</ul>
+<hr />
+<h2>Step 8 — Install Foundry Local (the offline AI engine)</h2>
+<p>🎯 <strong>Goal:</strong> Get Microsoft's local LLM runtime onto your machine and prove it runs a model.</p>
+<p>🧠 <strong>Why:</strong> This is the heart of &quot;offline AI.&quot; Foundry Local downloads and runs language
+models directly on your laptop's CPU/GPU/NPU. No cloud, no account, no API key.</p>
+<p>⌨️ <strong>Do</strong> — in PowerShell:</p>
+<pre><code class="language-powershell">winget install Microsoft.FoundryLocal
+</code></pre>
+<p><strong>Close and reopen PowerShell</strong> after it finishes (so the new <code>foundry</code> command is found).
+Then verify + run a small model:</p>
+<pre><code class="language-powershell">foundry --version
+foundry model list
+foundry run qwen2.5-0.5b
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>CLI note (verified on v0.10.2):</strong> the command is <code>foundry run &lt;model&gt;</code> — NOT
+<code>foundry model run</code>. In this version <code>run</code>/<code>chat</code>/<code>complete</code> are top-level commands;
+<code>model</code> is only for list/download/load. If a command is rejected, run <code>foundry --help</code>
+— your own binary is always the source of truth over any tutorial.</p>
+</blockquote>
+<p>That last command <strong>downloads</strong> a small model (a few GB — needs internet <em>this once</em>),
+loads it, and drops you into a <strong>live chat in your terminal</strong>. Ask it something:</p>
+<pre><code>Interactive Chat. Enter /? for help.
+&gt; Hello, who are you?
+</code></pre>
+<p>Type <code>/exit</code> or <code>Ctrl+C</code> to leave.</p>
+<p>✅ <strong>Check:</strong> The model replied to you in the terminal. <strong>You just ran an LLM with no
+internet dependency after download.</strong> That's the milestone.</p>
+<blockquote>
+<p>⚠️ <strong>Foundry Local needs a fair bit of disk + RAM.</strong> If <code>winget</code> fails or the model
+won't load, <strong>stop and paste me the exact error.</strong> Common fixes are disk space, or
+picking an even smaller model — we'll sort it together.</p>
+<p>❓ <strong>Ask me:</strong> &quot;What's the difference between <code>qwen2.5-0.5b</code> and other models?&quot; and &quot;How do
+I pick a model size for my laptop?&quot; — good questions to understand now.</p>
+</blockquote>
+<hr />
+<h2>🏁 Day 1 done. Milestone:</h2>
+<ul>
+<li>✅ Git repo on GitHub with a clean skeleton</li>
+<li>✅ Working Python venv</li>
+<li>✅ Foundry Local installed, a model chatted with you offline</li>
+</ul>
+<blockquote>
+<p>💾 Nothing to commit for the Foundry step (it's system software, not your code). Just
+make sure Steps 1–7 are pushed. <strong>Close the laptop. Real progress today.</strong></p>
+</blockquote>
+<hr />
+<hr />
+<h1>🟩 PHASE 1 — FOUNDATIONS (Days 2–4)</h1>
+<blockquote>
+<p>Now you learn the 3 core skills the RAG loop needs, each in a <strong>throwaway practice
+script</strong> before it goes into real code: (Day 2) call the LLM from Python, (Day 3)
+embeddings + similarity, (Day 4) SQLite. You're building intuition, not the final app
+yet.</p>
+</blockquote>
+<blockquote>
+<p>🗂️ <strong>Where practice scripts go:</strong> make a folder <code>scratch/</code> for these. They're for
+learning, not part of the app. Add <code>scratch/</code> to <code>.gitignore</code> — or commit them, your
+call. I'd commit them so future-you can see the learning journey.</p>
+</blockquote>
+<hr />
+<h2>Step 9 — Install your first Python packages</h2>
+<p>🎯 <strong>Goal:</strong> Get the Foundry Local Python SDK. It ships <strong>its own chat client</strong> — no
+separate OpenAI package needed. Microsoft's SDK talks to the local model directly.</p>
+<p>🧠 <strong>Why:</strong> <code>requirements.txt</code> is your project's shopping list of packages. Anyone (incl.
+future-you on a new laptop) can recreate your exact setup from it.</p>
+<p>⌨️ <strong>Do</strong> — make sure <code>(.venv)</code> is active, then:</p>
+<pre><code class="language-powershell">pip install foundry-local-sdk
+</code></pre>
+<p>Now <strong>freeze</strong> what you installed into the shopping list:</p>
+<pre><code class="language-powershell">pip freeze &gt; requirements.txt
+</code></pre>
+<p>✅ <strong>Check:</strong> Open <code>requirements.txt</code> — it lists <code>foundry-local-sdk</code> and its
+dependencies with version numbers.</p>
+<p>💾 <strong>Commit:</strong></p>
+<pre><code class="language-powershell">git add requirements.txt
+git commit -m &quot;chore: add foundry-local-sdk dep&quot;
+</code></pre>
+<hr />
+<h2>Step 10 — Call the local LLM from Python (Day 2 core)</h2>
+<p>🎯 <strong>Goal:</strong> Do in <em>code</em> what you did in the terminal at Step 8 — get an answer from the
+local model programmatically.</p>
+<p>🧠 <strong>Why:</strong> Your app can't type into a terminal chat. It needs to call the model from
+Python and get text back. This is that skill, isolated.</p>
+<p>📂 <strong>File:</strong> <code>scratch/hello_llm.py</code></p>
+<p>⌨️ <strong>Do:</strong> The Foundry SDK starts the local model <strong>and</strong> gives you its own chat client —
+no OpenAI package involved. Here's the <strong>complete</strong> starter (type it, don't paste-and-forget
+— typing builds memory):</p>
+<pre><code class="language-python"># scratch/hello_llm.py
+# Goal: ask the local model one question from Python.
+
+from foundry_local_sdk import Configuration, FoundryLocalManager
+
+MODEL_ALIAS = &quot;qwen2.5-0.5b&quot;
+
+# Start the Foundry Local service for our app.
+config = Configuration(app_name=&quot;rag_assistant&quot;)
+FoundryLocalManager.initialize(config)
+manager = FoundryLocalManager.instance
+
+# Register the execution providers (CPU/GPU backends) once.
+manager.download_and_register_eps()
+
+# Fetch, download, and load the model into memory.
+model = manager.catalog.get_model(MODEL_ALIAS)
+model.download()
+model.load()
+
+# The SDK hands us its own chat client — no OpenAI client needed.
+client = model.get_chat_client()
+messages = [
+    {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful, concise assistant.&quot;},
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain what RAG is in two sentences.&quot;},
+]
+
+# Stream the answer piece by piece as the model generates it.
+print(&quot;Assistant: &quot;, end=&quot;&quot;, flush=True)
+for chunk in client.complete_streaming_chat(messages):
+    if chunk.choices:
+        piece = chunk.choices[0].delta.content
+        if piece:
+            print(piece, end=&quot;&quot;, flush=True)
+print()
+
+model.unload()   # free the memory when done
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-powershell">python scratch\hello_llm.py
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>The Foundry SDK's exact class/method names are still changing between versions.</strong>
+If you get an <code>ImportError</code> or <code>AttributeError</code>, <strong>do not fight it alone — paste me the
+error.</strong> I'll match the code to <em>your</em> installed version in seconds. This is expected,
+not your fault.</p>
+</blockquote>
+<p>✅ <strong>Check:</strong> The script prints a 2-sentence explanation of RAG.</p>
+<p>📚 <strong>What you just learned:</strong></p>
+<ul>
+<li><strong>system message</strong> = standing instructions for the model (&quot;be concise&quot;)</li>
+<li><strong>user message</strong> = the actual question</li>
+<li><strong><code>chunk.choices[0].delta.content</code></strong> = each small piece of the answer as it streams in
+(a non-streaming call would give one <code>message.content</code> instead)</li>
+</ul>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;What's <code>temperature</code>?&quot; and &quot;What are tokens?&quot; — you'll want both soon.</p>
+</blockquote>
+<p>💾 <strong>Commit:</strong> <code>git add scratch/hello_llm.py &amp;&amp; git commit -m &quot;feat: call local LLM from python&quot;</code></p>
+<hr />
+<h2>Step 11 — Embeddings &amp; similarity (Day 3 core)</h2>
+<p>🎯 <strong>Goal:</strong> Turn sentences into vectors and measure which are closest in meaning.</p>
+<p>🧠 <strong>Why:</strong> This is <strong>step [1] and [2]</strong> of the RAG loop — the &quot;search by meaning&quot; magic.
+An embedding model maps text → a list of ~384 numbers where <em>similar meaning = similar
+numbers</em>. &quot;Cosine similarity&quot; scores how close two vectors point (1.0 = identical meaning,
+0 = unrelated).</p>
+<p>⌨️ <strong>Install the embedder</strong> (downloads a ~90MB model once, then offline forever):</p>
+<pre><code class="language-powershell">pip install sentence-transformers numpy
+pip freeze &gt; requirements.txt
+</code></pre>
+<p>📂 <strong>File:</strong> <code>scratch/hello_embeddings.py</code></p>
+<p>⌨️ I'll give you the setup. <strong>You write the similarity comparison</strong> — that's the learning bit.</p>
+<pre><code class="language-python"># scratch/hello_embeddings.py
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+model = SentenceTransformer(&quot;all-MiniLM-L6-v2&quot;)
+
+sentences = [
+    &quot;The cat sat on the mat.&quot;,
+    &quot;A feline rested on the rug.&quot;,
+    &quot;Python is a programming language.&quot;,
+]
+
+# Each sentence becomes a 384-number vector.
+vectors = model.encode(sentences)
+print(&quot;Vector shape:&quot;, vectors.shape)   # (3, 384)
+
+
+def cosine_similarity(a, b):
+    &quot;&quot;&quot;Return how similar two vectors are, from -1 to 1.&quot;&quot;&quot;
+    # 🧩 YOU WRITE THIS (2-3 lines).
+    # Hint: cosine similarity = dot(a, b) / (norm(a) * norm(b))
+    # NumPy gives you np.dot(a, b) and np.linalg.norm(a).
+    pass
+
+
+# Compare sentence 0 to sentences 1 and 2:
+print(&quot;cat vs feline :&quot;, cosine_similarity(vectors[0], vectors[1]))  # expect HIGH
+print(&quot;cat vs python :&quot;, cosine_similarity(vectors[0], vectors[2]))  # expect LOW
+</code></pre>
+<p>🧩 <strong>YOU WRITE THIS:</strong> the body of <code>cosine_similarity</code>. Try it yourself first. Stuck after
+a real attempt? Ask me and show me what you tried.</p>
+<p>✅ <strong>Check:</strong> &quot;cat vs feline&quot; scores clearly higher (~0.6+) than &quot;cat vs python&quot; (~0.1).
+That's semantic search working: the machine sees &quot;cat/feline&quot; mean nearly the same thing
+even with zero shared words.</p>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;Why 384 numbers? What do they represent?&quot; — great conceptual question.</p>
+</blockquote>
+<p>💾 <strong>Commit:</strong> <code>git commit -am &quot;feat: embeddings + cosine similarity demo&quot;</code>
+(<code>-am</code> = add tracked changes <em>and</em> commit in one go. Only works on files git already tracks.)</p>
+<hr />
+<h2>Step 12 — SQLite basics (Day 4 core)</h2>
+<p>🎯 <strong>Goal:</strong> Create a database file, put rows in, get rows out — with plain Python.</p>
+<p>🧠 <strong>Why:</strong> This is your <strong>data layer</strong>. You'll store each document chunk + its vector here
+so you don't recompute embeddings every run. <code>sqlite3</code> is built into Python — nothing to
+install.</p>
+<p>📂 <strong>File:</strong> <code>scratch/hello_sqlite.py</code></p>
+<p>⌨️ <strong>Do</strong> — type this and run it:</p>
+<pre><code class="language-python"># scratch/hello_sqlite.py
+import sqlite3
+
+# Connect (creates the file if it doesn't exist).
+conn = sqlite3.connect(&quot;scratch/practice.db&quot;)
+cur = conn.cursor()
+
+# Create a table. Do this once; IF NOT EXISTS makes it safe to re-run.
+cur.execute(&quot;&quot;&quot;
+    CREATE TABLE IF NOT EXISTS notes (
+        id      INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL
+    )
+&quot;&quot;&quot;)
+
+# Insert rows. The ? is a placeholder — ALWAYS use it, never f-strings in SQL.
+cur.execute(&quot;INSERT INTO notes (content) VALUES (?)&quot;, (&quot;Buy milk&quot;,))
+cur.execute(&quot;INSERT INTO notes (content) VALUES (?)&quot;, (&quot;Learn RAG&quot;,))
+conn.commit()   # commit = actually save to disk
+
+# Read rows back.
+cur.execute(&quot;SELECT id, content FROM notes&quot;)
+for row in cur.fetchall():
+    print(row)
+
+conn.close()
+</code></pre>
+<p>Run it twice:</p>
+<pre><code class="language-powershell">python scratch\hello_sqlite.py
+</code></pre>
+<p>✅ <strong>Check:</strong> First run prints 2 rows. Second run prints 4 (it inserted again). You now see
+how a database <em>persists</em> between runs.</p>
+<blockquote>
+<p>⚠️ <strong>Security habit — the <code>?</code> placeholder:</strong> never build SQL by gluing strings
+(<code>&quot;... VALUES ('&quot; + text + &quot;')&quot;</code>). That's the classic <strong>SQL injection</strong> bug. Always pass
+values as the <code>?</code> tuple like above. This matters even in a local app — build the safe
+habit now.</p>
+</blockquote>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;How will I store a <em>vector</em> (list of numbers) in a TEXT column?&quot; — this
+is exactly the problem you solve in Phase 2. Think about it now; the answer is &quot;as JSON&quot;.</p>
+</blockquote>
+<p>💾 <strong>Commit:</strong> <code>git commit -am &quot;feat: sqlite create/insert/select demo&quot;</code></p>
+<hr />
+<h2>🏁 Phase 1 done. Milestone:</h2>
+<p>You can, in isolation: <strong>call the local LLM</strong>, <strong>embed text &amp; score similarity</strong>, and
+<strong>store/fetch from SQLite</strong>. These three are every ingredient of RAG. Next phase glues them
+into the real app.</p>
+<blockquote>
+<p>🎁 <strong>Optional: learn one git branch move before Phase 2.</strong> So far you've committed
+straight to <code>main</code>. Pros build features on a <strong>branch</strong>, then merge. Try it once:</p>
+<pre><code class="language-powershell">git checkout -b practice-branch      # create + switch to a new branch
+# ...make a tiny change, commit it...
+git checkout main                    # switch back
+git merge practice-branch            # bring the change into main
+git branch -d practice-branch        # delete the finished branch
+</code></pre>
+<p>❓ <strong>Ask me</strong> to walk through what each line did. In Phase 2 you'll use a branch per
+feature for real.</p>
+</blockquote>
+<hr />
+<hr />
+<h1>🟨 PHASE 2 — BUILD THE APP (Days 5–8)</h1>
+<blockquote>
+<p>Now you build the real thing, one module per file, following the clean architecture. The
+<strong>workflow for every feature from here on:</strong></p>
+<pre><code>1. git checkout -b feature/NAME     ← branch off main
+2. write the code                   ← one file, one job
+3. run it, make it work
+4. git commit -am &quot;feat: ...&quot;       ← save
+5. git checkout main &amp;&amp; git merge feature/NAME
+6. git push
+</code></pre>
+<p>This is how real teams work. You'll internalize it by Day 8.</p>
+</blockquote>
+<hr />
+<h2>Step 13 — Central config (<code>src/config.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> One place for every setting: model names, file paths, how many chunks to
+retrieve.</p>
+<p>🧠 <strong>Why:</strong> When a value (like &quot;which model&quot;) appears in 5 files, changing it is a
+nightmare. Put it <strong>once</strong> in config; everything imports from there. This is the single
+most-loved habit in clean code.</p>
+<p>📂 <strong>File:</strong> <code>src/config.py</code></p>
+<pre><code class="language-powershell">git checkout -b feature/config
+</code></pre>
+<pre><code class="language-python"># src/config.py
+&quot;&quot;&quot;All project settings live here. Import from this file, never hardcode.&quot;&quot;&quot;
+from pathlib import Path
+
+# Folders (built relative to the project root, so it works on any machine).
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT_DIR / &quot;data&quot;
+DOCS_DIR = DATA_DIR / &quot;docs&quot;
+DB_PATH  = DATA_DIR / &quot;knowledge.db&quot;
+
+# Models
+EMBED_MODEL = &quot;all-MiniLM-L6-v2&quot;   # sentence-transformers embedder
+LLM_ALIAS   = &quot;qwen2.5-0.5b&quot;         # Foundry Local chat model
+
+# Retrieval settings
+TOP_K = 3                          # how many chunks to feed the LLM
+CHUNK_MAX_CHARS = 800              # rough size of each document chunk
+</code></pre>
+<p>✅ <strong>Check:</strong> <code>python -c &quot;from src.config import DB_PATH; print(DB_PATH)&quot;</code> prints the full
+path to <code>knowledge.db</code>. (Run this from the project root.)</p>
+<p>💾 <strong>Commit &amp; merge:</strong></p>
+<pre><code class="language-powershell">git commit -am &quot;feat: central config module&quot;
+git checkout main &amp;&amp; git merge feature/config &amp;&amp; git push
+</code></pre>
+<hr />
+<h2>Step 14 — Data layer (<code>src/database.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> All SQLite code lives in one module with clean functions: <code>init_db()</code>,
+<code>insert_chunk()</code>, <code>get_all_chunks()</code>.</p>
+<p>🧠 <strong>Why:</strong> Nobody else in your app should write SQL. They call these functions. If you ever
+swap SQLite for something else, you change <em>only this file</em>. That's the clean-architecture
+payoff.</p>
+<p>📂 <strong>File:</strong> <code>src/database.py</code> · <strong>Branch:</strong> <code>git checkout -b feature/database</code></p>
+<p>I'll give you the skeleton. <strong>You write <code>get_all_chunks()</code></strong> — you've done SELECT already.</p>
+<pre><code class="language-python"># src/database.py
+&quot;&quot;&quot;Data layer: the ONLY place that talks to SQLite.&quot;&quot;&quot;
+import json
+import sqlite3
+from src.config import DB_PATH
+
+
+def _connect():
+    return sqlite3.connect(DB_PATH)
+
+
+def init_db():
+    &quot;&quot;&quot;Create the chunks table if it doesn't exist.&quot;&quot;&quot;
+    with _connect() as conn:
+        conn.execute(&quot;&quot;&quot;
+            CREATE TABLE IF NOT EXISTS chunks (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                source    TEXT NOT NULL,      -- which document this came from
+                content   TEXT NOT NULL,      -- the chunk text
+                embedding TEXT NOT NULL       -- the vector, JSON-encoded
+            )
+        &quot;&quot;&quot;)
+
+
+def insert_chunk(source: str, content: str, embedding: list[float]):
+    &quot;&quot;&quot;Save one chunk + its vector. The vector becomes JSON text.&quot;&quot;&quot;
+    with _connect() as conn:
+        conn.execute(
+            &quot;INSERT INTO chunks (source, content, embedding) VALUES (?, ?, ?)&quot;,
+            (source, content, json.dumps(embedding)),
+        )
+
+
+def get_all_chunks() -&gt; list[dict]:
+    &quot;&quot;&quot;Return every chunk as a dict: {source, content, embedding(list)}.&quot;&quot;&quot;
+    # 🧩 YOU WRITE THIS.
+    # Steps:
+    #  1. connect, SELECT source, content, embedding FROM chunks
+    #  2. for each row, json.loads() the embedding back into a list
+    #  3. return a list of dicts like {&quot;source&quot;:..., &quot;content&quot;:..., &quot;embedding&quot;:[...]}
+    pass
+</code></pre>
+<p>🧩 <strong>YOU WRITE:</strong> <code>get_all_chunks()</code>. Hint: <code>json.loads(row[2])</code> turns the stored text back
+into a Python list.</p>
+<p>✅ <strong>Check:</strong> write a 3-line test in <code>scratch/</code> that calls <code>init_db()</code>, <code>insert_chunk(&quot;t&quot;,&quot;hi&quot;,[0.1,0.2])</code>,
+then prints <code>get_all_chunks()</code>. You should see your dict.</p>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;Why store the vector as JSON instead of its own columns?&quot; — the answer
+teaches you a real trade-off.</p>
+</blockquote>
+<p>💾 <code>git commit -am &quot;feat: sqlite data layer&quot; &amp;&amp; git checkout main &amp;&amp; git merge feature/database &amp;&amp; git push</code></p>
+<hr />
+<h2>Step 15 — AI layer (<code>src/embeddings.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> Two clean functions: <code>embed_text(str) -&gt; list[float]</code> and
+<code>embed_batch(list[str]) -&gt; list[list[float]]</code>.</p>
+<p>🧠 <strong>Why:</strong> Loading the embedding model is slow (~2s). You want to load it <strong>once</strong> and
+reuse it. This module hides that detail behind two simple functions.</p>
+<p>📂 <strong>File:</strong> <code>src/embeddings.py</code> · <strong>Branch:</strong> <code>feature/embeddings</code></p>
+<pre><code class="language-python"># src/embeddings.py
+&quot;&quot;&quot;AI layer: text -&gt; vectors. Loads the model once, reuses it.&quot;&quot;&quot;
+from sentence_transformers import SentenceTransformer
+from src.config import EMBED_MODEL
+
+_model = None   # module-level cache
+
+
+def _get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer(EMBED_MODEL)   # loaded only on first call
+    return _model
+
+
+def embed_text(text: str) -&gt; list[float]:
+    &quot;&quot;&quot;One string -&gt; one vector (as a plain Python list).&quot;&quot;&quot;
+    return _get_model().encode(text).tolist()
+
+
+def embed_batch(texts: list[str]) -&gt; list[list[float]]:
+    &quot;&quot;&quot;Many strings -&gt; many vectors. Faster than looping embed_text.&quot;&quot;&quot;
+    return _get_model().encode(texts).tolist()
+</code></pre>
+<p>✅ <strong>Check:</strong> <code>python -c &quot;from src.embeddings import embed_text; print(len(embed_text('hi')))&quot;</code>
+prints <code>384</code>.</p>
+<blockquote>
+<p>🧠 <strong>The <code>_model = None</code> pattern</strong> is called <em>lazy loading</em>: don't do expensive work until
+the first time it's actually needed, then remember the result. You'll see it everywhere.</p>
+</blockquote>
+<p>💾 Commit &amp; merge (same rhythm as before).</p>
+<hr />
+<h2>Step 16 — Chunking (<code>src/chunking.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> A function <code>chunk_text(str) -&gt; list[str]</code> that splits a long document into
+passage-sized pieces.</p>
+<p>🧠 <strong>Why:</strong> You can't embed a whole 10-page doc as one vector — meaning gets blurred, and
+the LLM has a context limit. RAG works on <strong>chunks</strong> (~1–3 paragraphs). Good chunking is
+<em>the</em> thing that most affects answer quality. (Remember that for your final presentation's
+&quot;lessons learned&quot;!)</p>
+<p>📂 <strong>File:</strong> <code>src/chunking.py</code> · <strong>Branch:</strong> <code>feature/chunking</code></p>
+<p>🧩 <strong>This one is mostly YOURS to write</strong> — it's simple string work and a great exercise.</p>
+<pre><code class="language-python"># src/chunking.py
+&quot;&quot;&quot;Split documents into passage-sized chunks.&quot;&quot;&quot;
+from src.config import CHUNK_MAX_CHARS
+
+
+def chunk_text(text: str) -&gt; list[str]:
+    &quot;&quot;&quot;Split text into chunks of roughly CHUNK_MAX_CHARS characters.
+
+    Simple strategy (good enough to start):
+      1. Split the text into paragraphs (they're separated by blank lines).
+      2. Greedily glue paragraphs together until adding the next one would
+         exceed CHUNK_MAX_CHARS, then start a new chunk.
+      3. Return the list of chunk strings (skip empty ones).
+    &quot;&quot;&quot;
+    # 🧩 YOU WRITE THIS.
+    # Hints:
+    #   - paragraphs = text.split(&quot;\n\n&quot;)
+    #   - build up a 'current' string; when len(current) + len(para) &gt; CHUNK_MAX_CHARS,
+    #     push 'current' to the result list and start fresh.
+    #   - strip whitespace; don't add empty chunks.
+    pass
+</code></pre>
+<p>✅ <strong>Check:</strong> feed it a 3-paragraph string → get back 1–2 chunks. Feed it a 20-paragraph
+string → get back several. No chunk wildly over <code>CHUNK_MAX_CHARS</code>.</p>
+<blockquote>
+<p><code># ponytail: naive char-based paragraph chunking. Upgrade to token-aware or sentence-boundary splitting only if answer quality suffers.</code> ← leave a comment like this
+in your code so you remember it's a deliberate simple choice, not an accident.</p>
+</blockquote>
+<p>💾 Commit &amp; merge.</p>
+<hr />
+<h2>Step 17 — Ingestion pipeline (<code>src/ingest.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> One script that reads every doc in <code>data/docs/</code>, chunks it, embeds each chunk,
+and stores it in SQLite. Run once (or whenever docs change).</p>
+<p>🧠 <strong>Why:</strong> This assembles Steps 14–16 into the <strong>&quot;load the knowledge base&quot;</strong> step from the
+big-picture diagram. After this runs, your DB is the searchable brain.</p>
+<p>📂 <strong>File:</strong> <code>src/ingest.py</code> · <strong>Branch:</strong> <code>feature/ingest</code></p>
+<p><strong>First</strong>, put 5–10 small <code>.txt</code> files in <code>data/docs/</code>. Course notes, FAQs, a manual —
+anything you'll want to ask questions about. (Ask me for sample docs if you don't have any.)</p>
+<pre><code class="language-python"># src/ingest.py
+&quot;&quot;&quot;Read docs -&gt; chunk -&gt; embed -&gt; store. Run this once to build the knowledge base.&quot;&quot;&quot;
+from src.config import DOCS_DIR
+from src.database import init_db, insert_chunk
+from src.embeddings import embed_batch
+from src.chunking import chunk_text
+
+
+def ingest():
+    init_db()
+    doc_files = list(DOCS_DIR.glob(&quot;*.txt&quot;))
+    print(f&quot;Found {len(doc_files)} documents.&quot;)
+
+    for path in doc_files:
+        text = path.read_text(encoding=&quot;utf-8&quot;)
+        chunks = chunk_text(text)
+        vectors = embed_batch(chunks)          # embed all chunks of this doc at once
+        for chunk, vector in zip(chunks, vectors):
+            insert_chunk(source=path.name, content=chunk, embedding=vector)
+        print(f&quot;  {path.name}: {len(chunks)} chunks stored&quot;)
+
+    print(&quot;Ingestion complete.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    ingest()
+</code></pre>
+<p>⌨️ <strong>Run:</strong> <code>python -m src.ingest</code></p>
+<p>✅ <strong>Check:</strong> It prints each file and its chunk count, ending with &quot;Ingestion complete.&quot;
+Then verify the DB really has rows — reuse <code>get_all_chunks()</code> in a quick scratch print.</p>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;Why <code>python -m src.ingest</code> instead of <code>python src/ingest.py</code>?&quot; — the <code>-m</code>
+matters for imports to work. Good thing to understand.</p>
+</blockquote>
+<p>💾 Commit &amp; merge.</p>
+<hr />
+<h2>Step 18 — Retriever (<code>src/retriever.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> <code>get_top_chunks(query, k) -&gt; list[dict]</code> — the search step. Embed the query,
+compare against every stored vector, return the <code>k</code> closest chunks.</p>
+<p>🧠 <strong>Why:</strong> This is <strong>step [2]</strong> of the RAG loop. For your small dataset, &quot;compare against
+every vector&quot; (brute force) is perfectly fine and easy to understand.</p>
+<p>📂 <strong>File:</strong> <code>src/retriever.py</code> · <strong>Branch:</strong> <code>feature/retriever</code></p>
+<pre><code class="language-python"># src/retriever.py
+&quot;&quot;&quot;Logic layer: find the chunks most relevant to a query.&quot;&quot;&quot;
+import numpy as np
+from src.config import TOP_K
+from src.database import get_all_chunks
+from src.embeddings import embed_text
+
+
+def _cosine(a, b) -&gt; float:
+    a, b = np.array(a), np.array(b)
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+
+def get_top_chunks(query: str, k: int = TOP_K) -&gt; list[dict]:
+    &quot;&quot;&quot;Return the k chunks whose embeddings are closest to the query.&quot;&quot;&quot;
+    query_vec = embed_text(query)
+    chunks = get_all_chunks()
+
+    # 🧩 YOU WRITE THIS core part:
+    #   1. for each chunk, compute _cosine(query_vec, chunk[&quot;embedding&quot;])
+    #   2. attach that score to the chunk (e.g. chunk[&quot;score&quot;] = ...)
+    #   3. sort chunks by score, highest first
+    #   4. return the top k
+    pass
+</code></pre>
+<p>🧩 <strong>YOU WRITE:</strong> the ranking. Hint: <code>sorted(chunks, key=lambda c: c[&quot;score&quot;], reverse=True)[:k]</code>.</p>
+<p>✅ <strong>Check:</strong> ask a question you <em>know</em> one of your docs answers → the top chunk's <code>content</code>
+is clearly the relevant passage. Print the scores too; the top one should be noticeably
+higher.</p>
+<blockquote>
+<p><code># ponytail: O(n) brute-force scan over all vectors. Fine for &lt;10k chunks. Swap to a vector index (faiss/sqlite-vec) only if retrieval gets slow.</code></p>
+</blockquote>
+<p>💾 Commit &amp; merge.</p>
+<hr />
+<h2>Step 19 — Generator (<code>src/generator.py</code>) — the full RAG loop 🔥</h2>
+<p>🎯 <strong>Goal:</strong> <code>answer_query(question) -&gt; str</code>. Retrieve chunks, build a prompt with them,
+call the local LLM, return the grounded answer. <strong>This is the whole project in one
+function.</strong></p>
+<p>🧠 <strong>Why:</strong> Steps [3] Augment + [4] Generate. The prompt is where you <em>instruct</em> the model
+to only use the provided context and to admit when it doesn't know — the anti-hallucination
+guardrail.</p>
+<p>📂 <strong>File:</strong> <code>src/generator.py</code> · <strong>Branch:</strong> <code>feature/generator</code></p>
+<pre><code class="language-python"># src/generator.py
+&quot;&quot;&quot;Logic layer: turn a question + retrieved context into a grounded answer.&quot;&quot;&quot;
+from foundry_local_sdk import Configuration, FoundryLocalManager
+from src.config import LLM_ALIAS
+from src.retriever import get_top_chunks
+
+_client = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        config = Configuration(app_name=&quot;rag_assistant&quot;)
+        FoundryLocalManager.initialize(config)
+        manager = FoundryLocalManager.instance
+        manager.download_and_register_eps()
+        model = manager.catalog.get_model(LLM_ALIAS)
+        model.download()
+        model.load()
+        _client = model.get_chat_client()   # loaded once, reused every call
+    return _client
+
+
+SYSTEM_PROMPT = (
+    &quot;You are a helpful assistant that answers ONLY using the provided context. &quot;
+    &quot;If the answer is not in the context, say: \&quot;I don't have that information.\&quot; &quot;
+    &quot;Cite the source document name in your answer.&quot;
+)
+
+
+def answer_query(question: str) -&gt; str:
+    chunks = get_top_chunks(question)
+    client = _get_client()
+
+    # 🧩 YOU WRITE the prompt assembly:
+    #   1. Build a 'context' string joining each chunk's source + content, e.g.
+    #        [source: notes.txt]
+    #        &lt;chunk content&gt;
+    #   2. Build the user message: the context block, then &quot;Question: {question}&quot;
+    #   3. Build messages = [{system: SYSTEM_PROMPT}, {user: &lt;your message&gt;}],
+    #      then stream the reply (copy the complete_streaming_chat shape from Step 10).
+    #   4. Accumulate each chunk.choices[0].delta.content into a string and return it.
+    pass
+
+
+if __name__ == &quot;__main__&quot;:
+    print(answer_query(&quot;put a question your docs can answer here&quot;))
+</code></pre>
+<p>🧩 <strong>YOU WRITE:</strong> the prompt assembly + model call. You have every piece from Step 10 and
+18 — this is you connecting them. <strong>This is the moment it all clicks. Take your time.</strong></p>
+<p>⌨️ <strong>Run:</strong> <code>python -m src.generator</code></p>
+<p>✅ <strong>Check (the big one):</strong> It answers your question <strong>using your document's content</strong>, and
+mentions the source. Then ask something <em>not</em> in your docs → it should say &quot;I don't have
+that information.&quot; If it makes something up, your prompt needs tightening — ask me.</p>
+<blockquote>
+<p>❓ <strong>Ask me:</strong> &quot;How do I make it stream the answer word-by-word like ChatGPT?&quot; — nice
+upgrade for the UI later.</p>
+</blockquote>
+<p>💾 Commit &amp; merge. <strong>This is your biggest milestone. Push it and be proud.</strong></p>
+<hr />
+<h2>Step 20 — CLI app (<code>main.py</code>)</h2>
+<p>🎯 <strong>Goal:</strong> A loop that asks for a question, prints the answer, repeats. Your first real
+<em>app</em> interface.</p>
+<p>🧠 <strong>Why:</strong> Before the fancy UI, prove the whole pipeline works from a simple entry point.
+CLI first = least that can go wrong.</p>
+<p>📂 <strong>File:</strong> <code>main.py</code> (project root) · <strong>Branch:</strong> <code>feature/cli</code></p>
+<pre><code class="language-python"># main.py
+&quot;&quot;&quot;Command-line interface for the local RAG assistant.&quot;&quot;&quot;
+from src.generator import answer_query
+
+
+def main():
+    print(&quot;Local RAG Assistant. Type 'quit' to exit.\n&quot;)
+    while True:
+        question = input(&quot;You: &quot;).strip()
+        if question.lower() in {&quot;quit&quot;, &quot;exit&quot;}:
+            break
+        if not question:
+            continue                      # ignore empty input
+        print(&quot;\nAssistant:&quot;, answer_query(question), &quot;\n&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>⌨️ <strong>Run:</strong> <code>python main.py</code></p>
+<p>✅ <strong>Check:</strong> You hold a multi-question conversation with your docs, from the terminal.</p>
+<p>💾 Commit &amp; merge &amp; push.</p>
+<hr />
+<h2>Step 21 — Retro Streamlit UI (<code>app.py</code>) 🎨</h2>
+<p>🎯 <strong>Goal:</strong> A web interface with a <strong>retro CRT-terminal aesthetic</strong> — green phosphor text,
+monospace font, dark screen, glow.</p>
+<p>🧠 <strong>Why:</strong> You wanted to learn UI + a retro look. Streamlit lets you build a web app in
+pure Python, and custom CSS gives it the vintage vibe.</p>
+<p>📂 <strong>File:</strong> <code>app.py</code> · <strong>Branch:</strong> <code>feature/ui</code></p>
+<p>⌨️ <strong>Install:</strong></p>
+<pre><code class="language-powershell">pip install streamlit
+pip freeze &gt; requirements.txt
+</code></pre>
+<pre><code class="language-python"># app.py
+&quot;&quot;&quot;Retro-terminal web UI for the local RAG assistant.&quot;&quot;&quot;
+import streamlit as st
+from src.generator import answer_query
+
+st.set_page_config(page_title=&quot;RAG Terminal&quot;, page_icon=&quot;🖥️&quot;, layout=&quot;centered&quot;)
+
+# --- Retro CRT styling ---------------------------------------------------
+st.markdown(&quot;&quot;&quot;
+&lt;style&gt;
+    .stApp {
+        background-color: #0a0f0a;
+        color: #33ff66;
+        font-family: 'Courier New', monospace;
+    }
+    h1, h2, h3, p, label, .stMarkdown {
+        color: #33ff66 !important;
+        text-shadow: 0 0 4px #33ff66;
+    }
+    .stTextInput &gt; div &gt; div &gt; input {
+        background-color: #0a0f0a;
+        color: #33ff66;
+        border: 1px solid #33ff66;
+        font-family: 'Courier New', monospace;
+    }
+    .stButton &gt; button {
+        background-color: #0a0f0a;
+        color: #33ff66;
+        border: 1px solid #33ff66;
+        font-family: 'Courier New', monospace;
+    }
+    .stButton &gt; button:hover {
+        background-color: #33ff66;
+        color: #0a0f0a;
+    }
+&lt;/style&gt;
+&quot;&quot;&quot;, unsafe_allow_html=True)
+
+# --- App -----------------------------------------------------------------
+st.title(&quot;▚ RAG TERMINAL ▞&quot;)
+st.caption(&quot;offline knowledge assistant · foundry local · no internet&quot;)
+
+question = st.text_input(&quot;QUERY &gt;&quot;, placeholder=&quot;ask your documents...&quot;)
+
+if st.button(&quot;TRANSMIT&quot;) and question:
+    with st.spinner(&quot;retrieving + generating...&quot;):
+        answer = answer_query(question)
+    st.markdown(&quot;**RESPONSE:**&quot;)
+    st.markdown(answer)
+</code></pre>
+<p>⌨️ <strong>Run:</strong> <code>streamlit run app.py</code> — a browser tab opens automatically.</p>
+<p>✅ <strong>Check:</strong> You ask a question in the retro green terminal, hit TRANSMIT, and your
+grounded answer appears. <strong>You have a real product now.</strong></p>
+<blockquote>
+<p>🎨 <strong>Make it yours</strong> (great learning, low risk — experiment freely on this branch):</p>
+<ul>
+<li>Add a &quot;scanline&quot; overlay with a CSS <code>repeating-linear-gradient</code>.</li>
+<li>Show which source chunks were used (call <code>get_top_chunks</code> and list them in an expander).</li>
+<li>Add a blinking cursor, an ASCII logo, a boot-up animation.</li>
+</ul>
+<p>❓ <strong>Ask me</strong> for any of these — the UI is the fun part, and CSS is very &quot;tweak and see.&quot;</p>
+</blockquote>
+<p>💾 Commit &amp; merge &amp; push.</p>
+<hr />
+<h2>🏁 Phase 2 done. Milestone:</h2>
+<p><strong>A working offline RAG assistant with a retro web UI.</strong> The core project is complete. Everything after this is making it solid and presentable.</p>
+<hr />
+<hr />
+<h1>🟥 PHASE 3 — POLISH, TEST &amp; PRESENT (Days 9–12)</h1>
+<hr />
+<h2>Step 22 — Prompt engineering pass (Day 9)</h2>
+<p>🎯 <strong>Goal:</strong> Tune <code>SYSTEM_PROMPT</code> in <code>generator.py</code> until answers are concise, grounded, and
+honest about not knowing.</p>
+<p>🧠 <strong>Why:</strong> The retrieval can be perfect but a sloppy prompt gives sloppy answers. This is
+cheap, high-impact tuning.</p>
+<p>⌨️ <strong>Do:</strong> Experiment with the system prompt. Try instructing: answer in ≤3 sentences;
+always name the source; if context is empty, don't guess. Re-run the same test questions
+after each tweak and compare.</p>
+<p>✅ <strong>Check:</strong> In-docs questions → tight, sourced answers. Out-of-docs questions → clean &quot;I
+don't have that information.&quot; No hallucinations.</p>
+<blockquote>
+<p><code># ponytail:</code> if you add citation post-processing, keep it minimal — the prompt
+instruction usually does the job without extra code.</p>
+</blockquote>
+<p>💾 <code>git commit -am &quot;fix: tighten system prompt for grounded answers&quot;</code></p>
+<hr />
+<h2>Step 23 — A tiny test (Day 9)</h2>
+<p>🎯 <strong>Goal:</strong> One runnable check so a future change can't silently break retrieval.</p>
+<p>🧠 <strong>Why:</strong> You don't need a big test suite. One smoke test that fails loudly if the core
+breaks is enough — and it teaches you how tests work.</p>
+<p>📂 <strong>File:</strong> <code>tests/test_smoke.py</code></p>
+<pre><code class="language-python"># tests/test_smoke.py
+&quot;&quot;&quot;Minimal check: cosine similarity behaves, retrieval returns results.&quot;&quot;&quot;
+from src.retriever import _cosine
+
+
+def test_cosine_identical_is_one():
+    assert abs(_cosine([1, 0, 0], [1, 0, 0]) - 1.0) &lt; 1e-6
+
+
+def test_cosine_orthogonal_is_zero():
+    assert abs(_cosine([1, 0], [0, 1])) &lt; 1e-6
+
+
+if __name__ == &quot;__main__&quot;:
+    test_cosine_identical_is_one()
+    test_cosine_orthogonal_is_zero()
+    print(&quot;All smoke tests passed.&quot;)
+</code></pre>
+<p>⌨️ <strong>Run:</strong> <code>python tests/test_smoke.py</code></p>
+<p>✅ <strong>Check:</strong> Prints &quot;All smoke tests passed.&quot;</p>
+<p>💾 <code>git commit -am &quot;test: add cosine similarity smoke tests&quot;</code></p>
+<hr />
+<h2>Step 24 — Functional testing (Day 10)</h2>
+<p>🎯 <strong>Goal:</strong> A table of test questions + whether the assistant handled each correctly.</p>
+<p>🧠 <strong>Why:</strong> This is your Phase 3 milestone from the official plan, and gold for your
+presentation.</p>
+<p>⌨️ <strong>Do:</strong> Make a file <code>TESTLOG.md</code>. For ~10 questions (some answerable, some not, plus
+edge cases like empty input and a very vague question), record: question → answer → verdict
+(✅ correct / ⚠️ weak / ❌ wrong). Fix the worst offenders.</p>
+<p>✅ <strong>Check:</strong> <code>TESTLOG.md</code> has your results and you've addressed the ❌ rows.</p>
+<p>💾 <code>git commit -m &quot;docs: add functional test log&quot;</code></p>
+<hr />
+<h2>Step 25 — README &amp; documentation (Day 11)</h2>
+<p>🎯 <strong>Goal:</strong> A <code>README.md</code> that explains the project and lets anyone run it.</p>
+<p>🧠 <strong>Why:</strong> The README is your project's front door — for graders, for your GitHub
+portfolio, for future-you. It also proves you understand your own system.</p>
+<p>⌨️ <strong>Do:</strong> Write <code>README.md</code> with these sections:</p>
+<ol>
+<li><strong>What it is</strong> — one paragraph: offline RAG Q&amp;A assistant with Foundry Local.</li>
+<li><strong>Architecture</strong> — paste the big-picture diagram; name the 4 layers.</li>
+<li><strong>Setup</strong> — clone, make venv, <code>pip install -r requirements.txt</code>, install Foundry Local.</li>
+<li><strong>Usage</strong> — <code>python -m src.ingest</code> then <code>streamlit run app.py</code>.</li>
+<li><strong>How it works</strong> — the RAG loop in your own words.</li>
+<li><strong>Limitations &amp; choices</strong> — mention the <code>ponytail:</code> shortcuts (brute-force search,
+simple chunking) as <em>deliberate</em> decisions. Graders love this.</li>
+</ol>
+<p>✅ <strong>Check:</strong> A friend could clone your repo and run it using only the README.</p>
+<p>💾 <code>git commit -m &quot;docs: write project README&quot;</code></p>
+<hr />
+<h2>Step 26 — Cleanup (Day 11)</h2>
+<p>🎯 <strong>Goal:</strong> Remove debug prints, add a comment to each module's top explaining its job,
+consistent style.</p>
+<p>🧠 <strong>Why:</strong> Clean code reads like the roadmap looks. This is the difference between &quot;works&quot;
+and &quot;professional.&quot;</p>
+<p>⌨️ <strong>Do:</strong> Read each file top to bottom. Delete dead code and stray prints. Make sure every
+<code>src/</code> file has a one-line docstring saying what it does (most already do).</p>
+<p>💾 <code>git commit -am &quot;refactor: cleanup and comments&quot;</code></p>
+<hr />
+<h2>Step 27 — Demo prep (Day 12)</h2>
+<p>🎯 <strong>Goal:</strong> A confident 5-minute demo.</p>
+<p>🧠 <strong>Why:</strong> The program ends with a presentation. Rehearsed = calm.</p>
+<p>⌨️ <strong>Do — prepare to show:</strong></p>
+<ol>
+<li><strong>Problem:</strong> &quot;General LLMs hallucinate about specific docs. My assistant answers only
+from a local knowledge base, offline.&quot;</li>
+<li><strong>Live demo:</strong> ask a question it answers (with source) → ask one it <em>doesn't</em> know →
+it says so. That contrast is the money shot.</li>
+<li><strong>How it works:</strong> walk the RAG loop diagram.</li>
+<li><strong>Lessons learned:</strong> pick one real thing — e.g. &quot;chunking strategy changed retrieval
+quality more than anything else.&quot;</li>
+<li><strong>Retro UI reveal:</strong> the green terminal always lands well.</li>
+</ol>
+<p>✅ <strong>Check:</strong> You can do the whole demo without notes, twice.</p>
+<p>💾 Final commit + push. <strong>Tag it:</strong></p>
+<pre><code class="language-powershell">git tag v1.0
+git push origin v1.0
+</code></pre>
+<p>📚 A <strong>tag</strong> marks a special commit forever — your v1.0 release.</p>
+<hr />
+<hr />
+<h1>🎓 FINAL FILE STRUCTURE (what you'll have built)</h1>
+<pre><code>local-rag-assistant/
+├── .gitignore
+├── README.md                 ← project front door
+├── requirements.txt          ← reproducible setup
+├── TESTLOG.md                ← your functional test results
+├── main.py                   ← CLI entry point
+├── app.py                    ← retro Streamlit web UI
+├── data/
+│   ├── docs/                 ← your source documents (.txt)
+│   └── knowledge.db          ← generated DB (git-ignored)
+├── src/
+│   ├── __init__.py
+│   ├── config.py             ← all settings in one place
+│   ├── chunking.py           ← split docs into passages
+│   ├── embeddings.py         ← text → vectors (AI layer)
+│   ├── database.py           ← SQLite (data layer)
+│   ├── ingest.py             ← docs → chunks → vectors → DB
+│   ├── retriever.py          ← query → top-k chunks (logic)
+│   └── generator.py          ← chunks + question → answer (logic)
+└── tests/
+    ├── __init__.py
+    └── test_smoke.py
+</code></pre>
+<hr />
+<h1>🆘 WHEN YOU GET STUCK (read this before panicking)</h1>
+<ol>
+<li><strong>Read the error's LAST line first.</strong> It usually names the problem.</li>
+<li><strong>Is <code>(.venv)</code> active?</strong> Half of all &quot;it broke&quot; is a closed sandbox.</li>
+<li><strong>Did you run from the project root?</strong> <code>python -m src.xxx</code> needs the root as your folder.</li>
+<li><strong>Foundry SDK error?</strong> Expected — the API shifts between versions. <strong>Paste it to me.</strong></li>
+<li><strong>Still stuck?</strong> Bring me: (a) what you ran, (b) the full error, (c) what you expected.
+That's the perfect question and I'll fix it fast.</li>
+</ol>
+<hr />
+<h1>🧭 GIT COMMANDS CHEAT SHEET (your daily moves)</h1>
+<pre><code>git status                       see what changed
+git add .                        stage all changes
+git commit -m &quot;type: message&quot;    save a checkpoint
+git commit -am &quot;type: message&quot;   stage tracked + commit (one shot)
+git log --oneline                see your history
+git checkout -b feature/name     new branch off current
+git checkout main                switch back to main
+git merge feature/name           bring a branch into main
+git branch -d feature/name       delete a finished branch
+git push                         upload to GitHub
+git tag v1.0                     mark a release
+</code></pre>
+<p><strong>Commit types:</strong> <code>feat</code> <code>fix</code> <code>docs</code> <code>chore</code> <code>refactor</code> <code>test</code></p>
+<hr />
+<blockquote>
+<p><strong>Mentor's closing note:</strong> You have everything here to go from zero to a finished,
+demo-ready project in 12 focused days. Don't read ahead and don't rush — the magic is in
+doing one green ✅ at a time. When you finish a step, tell me, or ask me the <code>❓</code> question
+next to it. I'm your mentor for the whole ride. <strong>Start with Step 1. Go.</strong></p>
+</blockquote>
+</body></html>
