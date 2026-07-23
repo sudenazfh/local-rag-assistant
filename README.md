@@ -15,7 +15,7 @@
 Ask questions about your own documents and get grounded, sourced answers —
 **no internet, no API keys, no data leaving your machine.**
 
-<img src="docs/screenshots/ui.png" alt="RAG Terminal web UI" width="80%">
+<img src="docs/screenshots/idle-ui.png" alt="RAG Terminal web UI" width="80%">
 
 </div>
 
@@ -30,32 +30,12 @@ retrieves the most relevant chunks of your documents, hands them to a local LLM
 as context, and answers **only** from what it found — refusing with *"I don't
 have that information."* when the answer isn't in your docs.
 
----
+When a question **is** covered by your documents, it retrieves the relevant
+chunks and answers from them — concise and grounded:
 
-## ✨ Showcase
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-**Grounded answer** — sourced from your docs
-
-<img src="docs/screenshots/ui.png" alt="Answering a question" width="100%">
-
-</td>
-<td width="50%" valign="top">
-
-**Honest refusal** — magenta, when it doesn't know
-
-<img src="docs/screenshots/ui-refuse.png" alt="Refusing out-of-scope question" width="100%">
-
-</td>
-</tr>
-</table>
-
-**CLI** — the same engine in an amber/teal terminal:
-
-<img src="docs/screenshots/cli.png" alt="CLI REPL" width="70%">
+<div align="center">
+<img src="docs/screenshots/ui.png" alt="Grounded answer from the documents" width="80%">
+</div>
 
 ---
 
@@ -138,10 +118,22 @@ streamlit run src/app.py
 ```
 
 Put your own `.txt` files in `data/docs/` before ingesting. The first question
-is slow (the model loads into memory); every question after is fast.
+is slow (the model loads into memory); every question after is fast — a spinner
+shows while it retrieves and generates:
+
+<div align="center">
+<img src="docs/screenshots/loading.png" alt="Retrieving and generating" width="70%">
+</div>
 
 > **Tip:** if Streamlit's file-watcher spams import warnings on startup, run
 > `streamlit run src/app.py --server.fileWatcherType none`.
+
+The command-line REPL (`python -m src.main`) is the same engine in an
+amber/teal terminal:
+
+<div align="center">
+<img src="docs/screenshots/REPL.png" alt="CLI REPL" width="90%">
+</div>
 
 ---
 
@@ -158,8 +150,13 @@ is slow (the model loads into memory); every question after is fast.
    ("answer only from context, cite the source, refuse if unknown") plus the
    retrieved chunks and the question. The local LLM streams back a grounded
    answer.
-4. **Answer** — the CLI or Streamlit UI displays it. Out-of-scope questions get
-   *"I don't have that information."* instead of a hallucination.
+4. **Answer** — the CLI or Streamlit UI displays it. When nothing relevant is
+   found in your documents, the assistant refuses with *"I don't have that
+   information."* instead of hallucinating an answer:
+
+<div align="center">
+<img src="docs/screenshots/ui-refuse.png" alt="Honest refusal when the answer is not in the documents" width="80%">
+</div>
 
 See [`tests/TESTLOG.md`](tests/TESTLOG.md) for a functional evaluation across
 in-docs, out-of-docs, and edge-case questions.
