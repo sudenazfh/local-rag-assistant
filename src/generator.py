@@ -20,7 +20,7 @@ def _get_client():
 
 SYSTEM_PROMPT = (
     "You are a helpful assistant that answers ONLY using the provided context. "
-    "Answer in 3 sentences or fewer, and cite the source document name. "
+    "Answer in 1 sentence, and cite the source document name. "
     "If the context is empty or does not contain the answer, do not guess — "
     "reply only with: \"I don't have that information.\""
 )

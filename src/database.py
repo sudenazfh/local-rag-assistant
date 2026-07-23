@@ -1,4 +1,3 @@
-"""Data layer: all SQLite code. Nobody else writes SQL — they call these functions."""
 import json
 import sqlite3
 
@@ -10,7 +9,6 @@ def _connect():
 
 
 def init_db():
-    """Create the chunks table once. Safe to re-run."""
     with _connect() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS chunks (
