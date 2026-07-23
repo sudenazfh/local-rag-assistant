@@ -176,7 +176,7 @@ in-docs, out-of-docs, and edge-case questions.
 
 ---
 
-## $\textsf{\color{#D97706} Limitations \& design choices}$
+## $\textsf{\color{#D97706} Limitations and design choices}$
 
 These are **deliberate** simplifications, the right amount of engineering for a
 local, single-user assistant, not oversights:
