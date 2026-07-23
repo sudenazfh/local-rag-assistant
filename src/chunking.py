@@ -1,8 +1,6 @@
 from src.config import CHUNK_MAX_CHARS
 
 def chunk_text(text: str) -> list[str]:
-    # ponytail: naive char-based paragraph chunking. Upgrade to token-aware or
-    # sentence-boundary splitting only if answer quality suffers.
     pharagraphs = text.split("\n\n")
     chunks = []
     current = ""
