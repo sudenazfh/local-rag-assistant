@@ -30,6 +30,8 @@ Pretty cool if you're asking me..
 
 <img src="docs/screenshots/idle-ui.png" alt="RAG Terminal web UI" width="80%">
 
+**▶️ [Watch the 5-minute demo walkthrough](https://www.loom.com/share/a2902b28dad64e44a744d6b774c39f05)**
+
 </div>
 
 ---
